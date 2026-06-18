@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────
-// asktian MCP server · 0.2.2
+// asktian MCP server · 0.2.3
 //
 // Exposes Chinese metaphysics (bazi · qimen · 5 elements · daily energy)
 // as tools any MCP-compatible AI agent can call.
@@ -17,6 +17,7 @@
 // ──────────────────────────────────────────────────────────────
 
 import { createServer as createHttpServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { pathToFileURL } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -32,7 +33,7 @@ import { todayEnergyTool, callTodayEnergy } from "./tools/today-energy.js";
 import { nameAnalysisTool, callNameAnalysis } from "./tools/name-analysis.js";
 import { apiKeyInfo } from "./lib/api-client.js";
 
-const VERSION = "0.2.2";
+const VERSION = "0.2.3";
 const ALL_TOOLS = [
   dailyReadingTool,
   compatibilityTool,
@@ -209,11 +210,24 @@ async function runHttp() {
 }
 
 // ───────────────────────────────────────────
-// boot — pick transport
+// exports — so the gateway (and other apps) can reuse the tools
+// without spawning a server. buildServer() returns a configured MCP Server;
+// the call* fns run individual tools directly.
 // ───────────────────────────────────────────
-const httpMode = process.env.ASKTIAN_MCP_HTTP === "1" || process.argv.includes("--http");
+export { buildServer, ALL_TOOLS, VERSION };
+export { callDailyReading, callCompatibility, callBestTime, callTodayEnergy, callNameAnalysis };
 
-(httpMode ? runHttp() : runStdio()).catch((e) => {
-  process.stderr.write(`[asktian-mcp] fatal: ${e}\n`);
-  process.exit(1);
-});
+// ───────────────────────────────────────────
+// boot — pick transport, but ONLY when run as the CLI entry point
+// (not when imported as a library — importing must have no side effects).
+// ───────────────────────────────────────────
+const isCliEntry =
+  !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isCliEntry) {
+  const httpMode = process.env.ASKTIAN_MCP_HTTP === "1" || process.argv.includes("--http");
+  (httpMode ? runHttp() : runStdio()).catch((e) => {
+    process.stderr.write(`[asktian-mcp] fatal: ${e}\n`);
+    process.exit(1);
+  });
+}
