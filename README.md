@@ -55,7 +55,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 }
 ```
 
-Restart Claude Desktop. Look for the 🔌 icon — asktian should appear with 5 tools.
+Restart Claude Desktop. Look for the 🔌 icon — asktian should appear with 6 tools.
 
 ### Cursor
 
@@ -134,7 +134,7 @@ Hosted (streamable-HTTP)? Pass it as a header instead: `Authorization: Bearer at
 
 ---
 
-## The 5 tools
+## The 6 tools
 
 ### 1. `asktian_daily_reading`
 
@@ -191,6 +191,21 @@ output: dominant element guess, tone, one-liner
 ```
 
 **Use when:** discussing baby names, company names, or "what kind of person is X" when birthdate unknown.
+
+### 6. `asktian_market_read`
+
+A Chinese-metaphysics signal on a binary prediction-market question (Polymarket/Kalshi style).
+
+```
+input:  { question, resolve_date?: YYYY-MM-DD, subject_birthdate?: YYYY-MM-DD }
+output: { signal: { lean: yes|no|neutral, score 5–95, confidence }, reasoning, disclaimer }
+```
+
+**Use when:** a user or a trading agent wants an *uncorrelated, for-fun* read on a market —
+"will X happen by date Y". The value isn't prediction; it's a **deterministic signal that
+doesn't read the same news every LLM reads**, published so the calls can be scored over time.
+⚠️ **Entertainment / falsifiable ritual — NOT financial advice.** Every response says so, and
+the tool is built to be presented as a novelty, never as a bet recommendation.
 
 ---
 

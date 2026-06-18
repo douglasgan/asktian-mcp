@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────
-// asktian MCP server · 0.2.5
+// asktian MCP server · 0.3.0
 //
 // Exposes Chinese metaphysics (bazi · qimen · 5 elements · daily energy)
 // as tools any MCP-compatible AI agent can call.
@@ -31,15 +31,17 @@ import { compatibilityTool, callCompatibility } from "./tools/compatibility.js";
 import { bestTimeTool, callBestTime } from "./tools/best-time.js";
 import { todayEnergyTool, callTodayEnergy } from "./tools/today-energy.js";
 import { nameAnalysisTool, callNameAnalysis } from "./tools/name-analysis.js";
+import { marketReadTool, callMarketRead } from "./tools/market-read.js";
 import { apiKeyInfo } from "./lib/api-client.js";
 
-const VERSION = "0.2.5";
+const VERSION = "0.3.0";
 const ALL_TOOLS = [
   dailyReadingTool,
   compatibilityTool,
   bestTimeTool,
   todayEnergyTool,
   nameAnalysisTool,
+  marketReadTool,
 ];
 
 // ───────────────────────────────────────────
@@ -75,6 +77,9 @@ function buildServer(): Server {
           break;
         case "asktian_name_analysis":
           result = callNameAnalysis(args as Parameters<typeof callNameAnalysis>[0]);
+          break;
+        case "asktian_market_read":
+          result = callMarketRead(args as Parameters<typeof callMarketRead>[0]);
           break;
         default:
           throw new Error(`unknown tool: ${name}`);
@@ -215,7 +220,7 @@ async function runHttp() {
 // the call* fns run individual tools directly.
 // ───────────────────────────────────────────
 export { buildServer, ALL_TOOLS, VERSION };
-export { callDailyReading, callCompatibility, callBestTime, callTodayEnergy, callNameAnalysis };
+export { callDailyReading, callCompatibility, callBestTime, callTodayEnergy, callNameAnalysis, callMarketRead };
 
 // ───────────────────────────────────────────
 // boot — pick transport, but ONLY when run as the CLI entry point
