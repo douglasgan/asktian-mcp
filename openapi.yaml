@@ -1,0 +1,364 @@
+openapi: 3.1.0
+info:
+  title: asktian Public API
+  version: 0.1.0
+  description: |
+    The decision layer beneath calendars, maps, dating apps, and AI agents.
+
+    4000 years of Chinese metaphysics (bazi · qimen · 5 elements · daily 干支)
+    exposed as REST tools any AI agent, plugin, or app can call.
+
+    Two ways to integrate:
+    1. **MCP server** (preferred for AI agents): `npm install -g @asktian/mcp-server`
+       — works in Claude Desktop, Cursor, Windsurf, Zed.
+    2. **This REST API** (for non-MCP clients): direct HTTP calls.
+
+    Both surface the same 5 capabilities. The MCP server is a thin wrapper around this spec.
+
+    ## Free key
+    Get a free `at_live_*` key at https://api.asktian.com — no credit card.
+    Pass as `Authorization: Bearer <key>`.
+
+    ## Donation, not subscription
+    Heavy usage donates $TIAN via wallet.asktian.com — no paywall, no rate-limit jail.
+
+  contact:
+    name: asktian
+    url: https://asktian.com
+  license:
+    name: MIT
+    url: https://github.com/douglasgan/tianprotocol/blob/main/LICENSE
+
+servers:
+  - url: https://api.asktian.com/v1
+    description: Production
+
+security:
+  - bearerAuth: []
+
+paths:
+  /reading:
+    get:
+      summary: Daily reading
+      description: |
+        Personalized today's reading for a person.
+        Returns archetype (one of 8 trigrams), today's stem-branch energy,
+        favorable colors / direction / hours, headline + body advice.
+
+        **Use when**: user asks "how is today for me", "what color to wear",
+        "what direction to face my desk", general daily guidance.
+      operationId: dailyReading
+      parameters:
+        - $ref: '#/components/parameters/Birthdate'
+        - $ref: '#/components/parameters/BirthHour'
+        - $ref: '#/components/parameters/Gender'
+      responses:
+        '200':
+          description: Personalized reading
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyReading'
+
+  /compatibility:
+    get:
+      summary: Compatibility between two people
+      description: |
+        Fate compatibility via Chinese metaphysics.
+        Returns qualitative label first, then a numeric score (HIDDEN when <60
+        to avoid making low-compat feel like rejection — this is intentional per
+        asktian's design principles. See `should_show_score`).
+
+        **Use when**: "will this person and I work", "compatibility check",
+        "is this a good match".
+      operationId: compatibility
+      parameters:
+        - name: person_a_birthdate
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: person_b_birthdate
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: dimension
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [love, career, friend, general]
+            default: general
+      responses:
+        '200':
+          description: Compat result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompatResult'
+
+  /best-time-for-action:
+    get:
+      summary: Find auspicious time windows for an action
+      description: |
+        Rank the next N days for a specific action by metaphysical favorability.
+        Returns top 3 best windows + windows to avoid.
+
+        **Use when**: "when should I do X", "should I move this meeting",
+        "best day to launch", "when to have the hard talk".
+
+        Most useful tool for real-time decision support — lets your agent give
+        specific scheduling advice instead of vague reflections.
+      operationId: bestTimeForAction
+      parameters:
+        - $ref: '#/components/parameters/Birthdate'
+        - name: action
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - difficult_conversation
+              - negotiation
+              - launch
+              - first_meeting
+              - ask_for_favor
+              - make_decision
+              - rest
+              - creative_work
+              - travel
+              - generic
+            default: generic
+        - name: range_days
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 30
+            default: 7
+      responses:
+        '200':
+          description: Ranked windows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BestTimeResult'
+
+  /today-energy:
+    get:
+      summary: Generic energy of a day
+      description: |
+        No birthdate needed. Returns the 干支 (stem+branch) of a date and the
+        dominant 5-element character.
+
+        **Use when**: AI agent wants to add cosmic context to a generic
+        suggestion without needing the user's birthdate.
+      operationId: todayEnergy
+      parameters:
+        - name: date
+          in: query
+          required: false
+          schema: { type: string, format: date }
+          description: Defaults to today (UTC) if omitted.
+      responses:
+        '200':
+          description: Day energy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DayEnergy'
+
+  /name-analysis:
+    get:
+      summary: Quick energetic profile of a name
+      description: |
+        Light 姓名学 (name-analysis). Use for baby names, company names, or
+        "what kind of person is X" when birthdate is unknown.
+      operationId: nameAnalysis
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema: { type: string }
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [en, zh, auto]
+            default: auto
+      responses:
+        '200':
+          description: Name profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameAnalysis'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: at_live_*
+
+  parameters:
+    Birthdate:
+      name: birthdate
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+      description: Gregorian ISO date YYYY-MM-DD.
+    BirthHour:
+      name: birth_hour
+      in: query
+      required: false
+      schema:
+        type: string
+      description: 24h time HH:MM. Omit if unknown (defaults to noon).
+    Gender:
+      name: gender
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [male, female, any]
+        default: any
+
+  schemas:
+    DailyReading:
+      type: object
+      required: [archetype, today, headline, body, lucky]
+      properties:
+        archetype:
+          type: object
+          properties:
+            glyph: { type: string, example: "坤" }
+            english: { type: string, example: "THE GROUNDED MOTHER" }
+            chinese: { type: string, example: "坤土温柔型" }
+            element: { type: string, example: "earth" }
+        today:
+          type: object
+          properties:
+            date: { type: string, format: date }
+            energy: { type: string, example: "Water-Fire day" }
+            stem_branch: { type: string, example: "癸巳" }
+        headline:
+          type: string
+          example: "Today wants you bigger."
+        body:
+          type: string
+        lucky:
+          type: object
+          properties:
+            colors: { type: array, items: { type: string } }
+            direction: { type: string, example: "Southeast" }
+            hours: { type: array, items: { type: string }, example: ["9am-11am", "3pm-5pm"] }
+        caution:
+          type: string
+          nullable: true
+
+    CompatResult:
+      type: object
+      properties:
+        compatibility:
+          type: object
+          properties:
+            qualitative_label:
+              type: string
+              example: "互补型 / Complementary tension"
+            category:
+              type: string
+              enum: [soulmate, growth, complement, soft, moderate]
+            element_flow:
+              type: string
+              example: "🔥 → 🌍"
+            description:
+              type: string
+            score:
+              type: integer
+              minimum: 0
+              maximum: 100
+              description: 0-100. RESPECT should_show_score below.
+            should_show_score:
+              type: boolean
+              description: |
+                False when score < 60. UI / AI MUST not display the number
+                in that case — show qualitative label only. Per asktian's
+                design principle: low compat must never feel like rejection.
+            level:
+              type: string
+              enum: [good, moderate, soft]
+        today_advice:
+          type: string
+        trigrams:
+          type: object
+          properties:
+            a: { $ref: '#/components/schemas/TrigramSummary' }
+            b: { $ref: '#/components/schemas/TrigramSummary' }
+        note_for_ai:
+          type: string
+          description: Hint for AI agents about how to surface this result.
+
+    BestTimeResult:
+      type: object
+      properties:
+        person:
+          type: object
+          properties:
+            archetype: { type: string }
+            glyph: { type: string }
+            element: { type: string }
+        action: { type: string }
+        headline:
+          type: string
+          description: 1-line summary, ready to read back to user.
+        best_windows:
+          type: array
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/TimeWindow'
+        avoid_windows:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeWindow'
+        note_for_ai:
+          type: string
+
+    TimeWindow:
+      type: object
+      properties:
+        date: { type: string, format: date }
+        hourRange: { type: string, example: "10am-12pm" }
+        score: { type: integer }
+        reason: { type: string }
+        caution: { type: string }
+
+    DayEnergy:
+      type: object
+      properties:
+        date: { type: string, format: date }
+        label: { type: string, example: "Fire-Earth day" }
+        stem: { type: string, example: "丙" }
+        branch: { type: string, example: "申" }
+        stem_element: { type: string }
+        branch_element: { type: string }
+        description: { type: string }
+
+    NameAnalysis:
+      type: object
+      properties:
+        name: { type: string }
+        dominant_element: { type: string }
+        energetic_tone: { type: string }
+        one_liner: { type: string }
+        note_for_ai: { type: string }
+
+    TrigramSummary:
+      type: object
+      properties:
+        glyph: { type: string }
+        element: { type: string }
+        nameEn: { type: string }

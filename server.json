@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.douglasgan/asktian",
+  "description": "Chinese metaphysics (bazi, qimen, 5-element, daily 干支) as decision-support tools for AI agents. Ask 'when should I do X' and get specific time windows instead of vague advice.",
+  "repository": {
+    "url": "https://github.com/douglasgan/asktian-mcp",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "websiteUrl": "https://asktian.com/agents",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@asktian/mcp-server",
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "ASKTIAN_API_KEY",
+          "description": "askTIAN API key (optional — tools work in local-fallback mode without it). Free key at https://api.asktian.com",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.asktian.com/mcp"
+    }
+  ]
+}
