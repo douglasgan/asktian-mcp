@@ -1,6 +1,6 @@
 {
   "name": "@asktian/mcp-server",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "MCP server for asktian — Chinese metaphysics inside your AI assistant",
   "license": "MIT",
   "type": "module",
@@ -19,7 +19,8 @@
     "start": "node dist/server.js",
     "start:http": "ASKTIAN_MCP_HTTP=1 node dist/server.js",
     "check": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
   },
   "keywords": [
     "mcp",
