@@ -12,6 +12,13 @@ Adds 4000 years of Chinese metaphysical traditions (bazi / 八字, qimen / 奇�
 
 When you ask your AI assistant a timing, person, or decision question, it can quietly consult asktian before answering.
 
+> ### 🧪 Just testing? → run it **with no key.**
+> ### 🎯 Want the real answers? → add a free key from **[api.asktian.com](https://api.asktian.com)**.
+>
+> The server works **instantly without any API key** (local-fallback mode — great for trying it
+> out). For accurate, full-system readings (real bazi computation, the 70+ endpoint backend),
+> set `ASKTIAN_API_KEY`. Details in [API key](#api-key) below — **the key is optional.**
+
 ```
 You: "I have a hard conversation with my boss tomorrow at 3pm. Should I move it?"
 
@@ -101,9 +108,29 @@ snippets in **[docs/langchain-llamaindex.md](docs/langchain-llamaindex.md)**.
 
 ## API key
 
-The server works **without** an API key — it falls back to local logic so you can try it instantly.
+**The key is optional.** Pick your mode:
 
-For higher-quality readings (real bazi computation from api.asktian.com's 70+ endpoints, daily fortune, compatibility scoring against the full system), get a free key at [api.asktian.com](https://api.asktian.com) and set `ASKTIAN_API_KEY` in your client config.
+| | 🧪 **Local mode** (no key) | 🎯 **Live mode** (with key) |
+|---|---|---|
+| Setup | nothing — works instantly | get a **free key** at [api.asktian.com](https://api.asktian.com) |
+| Best for | **testing / trying it out** | **real, accurate answers** |
+| Readings | computed locally on the spot | full api.asktian.com backend (70+ endpoints): real bazi computation, daily fortune, full-system compatibility scoring |
+| `today_energy`, `name_analysis` | identical to live | identical to local |
+
+**To switch to Live mode**, set `ASKTIAN_API_KEY` in your client config:
+
+```jsonc
+{
+  "mcpServers": {
+    "asktian": {
+      "command": "npx",
+      "args": ["-y", "@asktian/mcp-server"],
+      "env": { "ASKTIAN_API_KEY": "at_live_..." }   // ← omit this line to stay in local mode
+    }
+  }
+}
+```
+Hosted (streamable-HTTP)? Pass it as a header instead: `Authorization: Bearer at_live_...`.
 
 ---
 

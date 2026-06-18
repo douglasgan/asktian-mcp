@@ -20,7 +20,7 @@
       "environmentVariables": [
         {
           "name": "ASKTIAN_API_KEY",
-          "description": "askTIAN API key (optional — tools work in local-fallback mode without it). Free key at https://api.asktian.com",
+          "description": "OPTIONAL. Leave blank to test in local-fallback mode (works instantly). For real, full-accuracy readings, get a free key at https://api.asktian.com and paste it here.",
           "isRequired": false,
           "isSecret": true
         }
