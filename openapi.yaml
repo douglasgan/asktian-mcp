@@ -27,7 +27,7 @@ info:
     url: https://asktian.com
   license:
     name: MIT
-    url: https://github.com/douglasgan/tianprotocol/blob/main/LICENSE
+    url: https://github.com/douglasgan/asktian-mcp/blob/main/LICENSE
 
 servers:
   - url: https://api.asktian.com/v1
