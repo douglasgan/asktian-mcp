@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────
-// asktian MCP server · 0.2.4
+// asktian MCP server · 0.2.5
 //
 // Exposes Chinese metaphysics (bazi · qimen · 5 elements · daily energy)
 // as tools any MCP-compatible AI agent can call.
@@ -33,7 +33,7 @@ import { todayEnergyTool, callTodayEnergy } from "./tools/today-energy.js";
 import { nameAnalysisTool, callNameAnalysis } from "./tools/name-analysis.js";
 import { apiKeyInfo } from "./lib/api-client.js";
 
-const VERSION = "0.2.4";
+const VERSION = "0.2.5";
 const ALL_TOOLS = [
   dailyReadingTool,
   compatibilityTool,

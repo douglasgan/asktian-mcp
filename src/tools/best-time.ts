@@ -1,5 +1,6 @@
 // Tool: asktian_best_time_for_action
 import { bestTimeFor, type ActionKind } from "../lib/best-time.js";
+import { parseISODate } from "../lib/date.js";
 
 export const bestTimeTool = {
   name: "asktian_best_time_for_action",
@@ -50,9 +51,7 @@ export function callBestTime(args: {
   action?: ActionKind;
   range_days?: number;
 }) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(args.birthdate)) {
-    throw new Error("birthdate must be YYYY-MM-DD");
-  }
+  parseISODate(args.birthdate, "birthdate"); // validates format + calendar validity
   const range = Math.min(30, Math.max(1, args.range_days ?? 7));
   const result = bestTimeFor(args.birthdate, args.action ?? "generic", range);
   return {

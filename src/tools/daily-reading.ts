@@ -1,5 +1,6 @@
 // Tool: asktian_daily_reading
 import { readingFor } from "../lib/reading.js";
+import { parseISODate } from "../lib/date.js";
 
 export const dailyReadingTool = {
   name: "asktian_daily_reading",
@@ -35,9 +36,7 @@ export function callDailyReading(args: {
   birth_hour?: string;
   gender?: "male" | "female" | "any";
 }) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(args.birthdate)) {
-    throw new Error("birthdate must be YYYY-MM-DD");
-  }
+  parseISODate(args.birthdate, "birthdate"); // validates format + calendar validity
   const r = readingFor(args.birthdate, { gender: args.gender });
   return {
     archetype: {

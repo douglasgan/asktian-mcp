@@ -1,6 +1,7 @@
 // Tool: asktian_compatibility
 import { computeCompatibility, type CompatDimension } from "../lib/compat.js";
 import { fetchBirthdayCompat } from "../lib/api-client.js";
+import { parseISODate } from "../lib/date.js";
 
 export const compatibilityTool = {
   name: "asktian_compatibility",
@@ -37,9 +38,7 @@ export async function callCompatibility(args: {
   dimension?: CompatDimension;
 }) {
   for (const d of [args.person_a_birthdate, args.person_b_birthdate]) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) {
-      throw new Error("birthdates must be YYYY-MM-DD");
-    }
+    parseISODate(d, "birthdates"); // validates format + calendar validity
   }
 
   const local = computeCompatibility(

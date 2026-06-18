@@ -1,5 +1,6 @@
 // Tool: asktian_today_energy
 import { todayEnergy } from "../lib/reading.js";
+import { parseISODate } from "../lib/date.js";
 
 export const todayEnergyTool = {
   name: "asktian_today_energy",
@@ -21,8 +22,7 @@ export const todayEnergyTool = {
 };
 
 export function callTodayEnergy(args: { date?: string }) {
-  const d = args.date ? new Date(args.date + "T00:00:00Z") : new Date();
-  if (isNaN(d.getTime())) throw new Error("invalid date — use YYYY-MM-DD");
+  const d = args.date ? parseISODate(args.date) : new Date();
   const energy = todayEnergy(d);
   return {
     date: energy.date,
