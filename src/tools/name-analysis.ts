@@ -28,7 +28,9 @@ export const nameAnalysisTool = {
 const VOWELS = "aeiouAEIOU";
 
 export function callNameAnalysis(args: { name: string; language?: string }) {
-  const name = args.name.trim();
+  // Guard non-string / missing input — a number or undefined would crash on .trim()
+  // with a cryptic TypeError instead of a clean validation error.
+  const name = typeof args.name === "string" ? args.name.trim() : "";
   if (!name) throw new Error("name is required");
 
   // Compute a simple hash-stable "element" for the name.

@@ -145,6 +145,12 @@ export function bestTimeFor(
   rangeDays = 7,
   opts: { gender?: "male" | "female" | "any" } = {},
 ): BestTimeResult {
+  // Normalize unknown/invalid actions to "generic" — the inputSchema enum is
+  // advisory, so a caller (or misbehaving agent) can pass anything. Without this,
+  // ACTION_ELEMENT_AFFINITY[action] / ACTION_BEST_HOURS[action] would be undefined
+  // and crash with a cryptic TypeError instead of returning a sensible reading.
+  if (!(action in ACTION_ELEMENT_AFFINITY)) action = "generic";
+
   const trigramKey = trigramFromBirthdate(birthdate, opts.gender ?? "any");
   const t = TRIGRAMS[trigramKey];
 
