@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ──────────────────────────────────────────────────────────────
-// asktian MCP server · 0.2.1
+// asktian MCP server · 0.2.2
 //
 // Exposes Chinese metaphysics (bazi · qimen · 5 elements · daily energy)
 // as tools any MCP-compatible AI agent can call.
@@ -32,7 +32,7 @@ import { todayEnergyTool, callTodayEnergy } from "./tools/today-energy.js";
 import { nameAnalysisTool, callNameAnalysis } from "./tools/name-analysis.js";
 import { apiKeyInfo } from "./lib/api-client.js";
 
-const VERSION = "0.2.1";
+const VERSION = "0.2.2";
 const ALL_TOOLS = [
   dailyReadingTool,
   compatibilityTool,
@@ -164,13 +164,23 @@ async function runHttp() {
       return;
     }
 
+    // Stateless mode has no server-initiated SSE stream, so only POST is valid.
+    // Without this, a GET (which the SDK answers with a long-lived SSE stream)
+    // hangs the connection open forever — a resource-exhaustion vector on a
+    // public endpoint. Per the MCP spec, reject non-POST with 405.
+    if (req.method !== "POST") {
+      res.writeHead(405, { "Content-Type": "application/json", "Allow": "POST" });
+      res.end(JSON.stringify({ jsonrpc: "2.0", error: { code: -32000, message: `Method not allowed — POST to ${mcpPath}` }, id: null }));
+      return;
+    }
+
     // Stateless: a fresh Server + transport per request avoids cross-request
     // ID collisions. sessionIdGenerator: undefined = no session state.
     // NOTE (Phase 3): per-request `Authorization` / x402 payment headers are
     // read here when billing lands; for now the gateway's own ASKTIAN_API_KEY
     // env is used by the api-client.
     try {
-      const body = req.method === "POST" ? await readBody(req) : undefined;
+      const body = await readBody(req); // guaranteed POST by the check above
       const server = buildServer();
       const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
       res.on("close", () => {
