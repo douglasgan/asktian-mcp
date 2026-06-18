@@ -52,7 +52,10 @@ export function callBestTime(args: {
   range_days?: number;
 }) {
   parseISODate(args.birthdate, "birthdate"); // validates format + calendar validity
-  const range = Math.min(30, Math.max(1, args.range_days ?? 7));
+  // Coerce to a finite integer; a non-numeric range_days (e.g. "abc", NaN) would
+  // otherwise flow through Math.max(1, NaN) → NaN and produce "No window in NaN days".
+  const n = Number(args.range_days ?? 7);
+  const range = Number.isFinite(n) ? Math.min(30, Math.max(1, Math.floor(n))) : 7;
   const result = bestTimeFor(args.birthdate, args.action ?? "generic", range);
   return {
     person: {
