@@ -1,5 +1,10 @@
 # asktian MCP server
 
+[![CI](https://github.com/douglasgan/asktian-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/douglasgan/asktian-mcp/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@asktian/mcp-server)](https://www.npmjs.com/package/@asktian/mcp-server)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![asktian MCP server](https://glama.ai/mcp/servers/douglasgan/asktian-mcp/badges/score.svg)](https://glama.ai/mcp/servers/douglasgan/asktian-mcp)
+
 > **Chinese metaphysics inside your AI assistant.**
 > 不知道就问天 · Ask tian when you don't know.
 

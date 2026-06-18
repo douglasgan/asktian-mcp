@@ -1,0 +1,22 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm run build
+      - run: npm run check
+      - name: smoke test — stdio MCP handshake
+        run: |
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
+            | node dist/server.js | grep -q '"serverInfo"' && echo "✓ MCP handshake ok"
+      - name: smoke test — HTTP health
+        run: |
+          PORT=8080 ASKTIAN_MCP_HTTP=1 node dist/server.js & sleep 2
+          curl -fs http://localhost:8080/health | grep -q '"ok":true' && echo "✓ HTTP health ok"
