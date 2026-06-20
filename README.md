@@ -12,12 +12,14 @@ Adds 4000 years of Chinese metaphysical traditions (bazi / 八字, qimen / 奇�
 
 When you ask your AI assistant a timing, person, or decision question, it can quietly consult asktian before answering.
 
-> ### 🧪 Just testing? → run it **with no key.**
-> ### 🎯 Want the real answers? → add a free key from **[api.asktian.com](https://api.asktian.com)**.
+> ### 🧪 Just testing? → run it **with no key — free forever.**
+> ### 🎯 Want the real answers? → add a key from **[api.asktian.com](https://api.asktian.com)** *(requires a funded TIAN balance)*.
 >
-> The server works **instantly without any API key** (local-fallback mode — great for trying it
-> out). For accurate, full-system readings (real bazi computation, the 70+ endpoint backend),
-> set `ASKTIAN_API_KEY`. Details in [API key](#api-key) below — **the key is optional.**
+> The server works **instantly without any API key** (local-fallback mode — free forever, great
+> for trying it out). For accurate, full-system readings (real bazi computation, the 70+ endpoint
+> backend), set `ASKTIAN_API_KEY` — note the key runs on **TIAN Points**, so it needs a funded
+> balance ([top up at wallet.asktian.com](https://wallet.asktian.com)). The key is optional;
+> local mode is always free.
 
 ```
 You: "I have a hard conversation with my boss tomorrow at 3pm. Should I move it?"
@@ -112,7 +114,8 @@ snippets in **[docs/langchain-llamaindex.md](docs/langchain-llamaindex.md)**.
 
 | | 🧪 **Local mode** (no key) | 🎯 **Live mode** (with key) |
 |---|---|---|
-| Setup | nothing — works instantly | get a **free key** at [api.asktian.com](https://api.asktian.com) |
+| Setup | nothing — works instantly | get a key at [api.asktian.com](https://api.asktian.com) |
+| Cost | **free forever** | key runs on **TIAN Points** — needs a funded balance ([top up](https://wallet.asktian.com)) |
 | Best for | **testing / trying it out** | **real, accurate answers** |
 | Readings | computed locally on the spot | full api.asktian.com backend (70+ endpoints): real bazi computation, daily fortune, full-system compatibility scoring |
 | `today_energy`, `name_analysis` | identical to live | identical to local |
@@ -255,7 +258,7 @@ PRs welcome. The lib/ folder is intentionally self-contained for clean npm distr
 ## Links
 
 - **Web app:** [play.asktian.com](https://play.asktian.com) *(coming soon)*
-- **API + free key:** [api.asktian.com](https://api.asktian.com)
+- **API key (runs on TIAN Points):** [api.asktian.com](https://api.asktian.com)
 - **$TIAN token + wallet:** [wallet.asktian.com](https://wallet.asktian.com)
 - **Source:** [github.com/douglasgan/asktian-mcp](https://github.com/douglasgan/asktian-mcp)
 

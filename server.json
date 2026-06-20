@@ -20,7 +20,7 @@
       "environmentVariables": [
         {
           "name": "ASKTIAN_API_KEY",
-          "description": "OPTIONAL. Leave blank to test in local-fallback mode (works instantly). For real, full-accuracy readings, get a free key at https://api.asktian.com and paste it here.",
+          "description": "OPTIONAL. Leave blank for free local-fallback mode (works instantly, approximate). For real, full-accuracy readings, set a key from https://api.asktian.com — note: the key runs on TIAN Points, so it needs a funded balance (top up at https://wallet.asktian.com).",
           "isRequired": false,
           "isSecret": true
         }

@@ -13,8 +13,8 @@ There are two ways to connect:
 | **stdio** (local) | `npx -y @asktian/mcp-server` | local dev, single-user |
 
 > **Auth:** pass your askTIAN API key as a Bearer header (HTTP) or `ASKTIAN_API_KEY` env (stdio).
-> Without a key the tools still work in local-fallback mode. Free keys: https://api.asktian.com
-> TIAN Points (billing): https://wallet.asktian.com
+> Without a key the tools still work in free local-fallback mode. For real answers, get a key at
+> https://api.asktian.com — it runs on TIAN Points, so fund a balance at https://wallet.asktian.com
 
 ---
 
