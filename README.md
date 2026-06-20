@@ -12,6 +12,8 @@ Adds 4000 years of Chinese metaphysical traditions (bazi / 八字, qimen / 奇�
 
 When you ask your AI assistant a timing, person, or decision question, it can quietly consult asktian before answering.
 
+**The decision layer for AI agents.** Agents already plug in search, memory, and payments — askTIAN is the layer that gives them a *stance*: a specific, falsifiable call instead of *"it depends."* → [Why it sells](docs/POSITIONING.md) · [2-min quickstart](docs/quickstart.md)
+
 > ### ✨ Real readings, **no key needed.**
 >
 > The tools call the live askTIAN backend and return **real** results — daily almanac, fate
