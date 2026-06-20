@@ -2,6 +2,7 @@
 import { todayEnergy } from "../lib/reading.js";
 import { parseISODate } from "../lib/date.js";
 import { dailyReadingPreview } from "../lib/teaser.js";
+import { fetchAlmanacDaily } from "../lib/api-client.js";
 
 export const dailyReadingTool = {
   name: "asktian_daily_reading",
@@ -32,13 +33,39 @@ export const dailyReadingTool = {
   },
 };
 
-export function callDailyReading(args: {
+export async function callDailyReading(args: {
   birthdate: string;
   birth_hour?: string;
   gender?: "male" | "female" | "any";
 }) {
   parseISODate(args.birthdate, "birthdate"); // validates format + calendar validity
-  // The per-chart reading is computed server-side at api.asktian.com. Keyless
-  // mode returns a generic, clearly-marked preview (see lib/teaser.ts).
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Real daily almanac from the live backend (public, rate-limited).
+  const a = await fetchAlmanacDaily(today);
+  if (a) {
+    return {
+      for_birthdate: args.birthdate,
+      today: {
+        date: a.date ?? today,
+        lunar_date: a.lunarDate,
+        ganzhi: a.dayGanZhi,
+        zodiac: a.dayZodiac,
+        auspicious_day: a.isHuangDao,
+      },
+      do_today: a.auspiciousActivities,
+      avoid_today: a.inauspiciousActivities,
+      lucky_directions: { wealth: a.positionCai, joy: a.positionXi, blessing: a.positionFu },
+      overall_fortune: a.overallFortune,
+      score: a.score,
+      note_for_ai:
+        "Real daily almanac from api.asktian.com. Surface today's do/avoid activities, lucky " +
+        "directions, and fortune. For a deeper birthdate-personalized bazi reading, the premium " +
+        "tian.* tier (needs an API key) goes further.",
+      source: "api.asktian.com",
+    };
+  }
+
+  // Fallback: generic preview when the backend is unreachable.
   return dailyReadingPreview(todayEnergy(new Date()));
 }

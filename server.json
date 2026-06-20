@@ -6,21 +6,21 @@
     "url": "https://github.com/douglasgan/asktian-mcp",
     "source": "github"
   },
-  "version": "0.3.2",
+  "version": "0.3.3",
   "websiteUrl": "https://asktian.com/agents",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@asktian/mcp-server",
-      "version": "0.3.2",
+      "version": "0.3.3",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
           "name": "ASKTIAN_API_KEY",
-          "description": "OPTIONAL. Leave blank for a free generic preview (marked sample:true, not personalized). For real, chart-specific readings, set a key from https://api.asktian.com — the key runs on TIAN Points, so it needs a funded balance (top up at https://wallet.asktian.com).",
+          "description": "OPTIONAL. Readings are free and work with no key (public backend, rate-limited to ~300 requests / 15 min). Set a key from https://api.asktian.com for higher rate limits and the premium tian.* reading tier.",
           "isRequired": false,
           "isSecret": true
         }

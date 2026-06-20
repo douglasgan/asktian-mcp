@@ -12,14 +12,14 @@ Adds 4000 years of Chinese metaphysical traditions (bazi / 八字, qimen / 奇�
 
 When you ask your AI assistant a timing, person, or decision question, it can quietly consult asktian before answering.
 
-> ### 🧪 Just testing? → run it **with no key — free forever.**
-> ### 🎯 Want the real answers? → add a key from **[api.asktian.com](https://api.asktian.com)** *(requires a funded TIAN balance)*.
+> ### ✨ Real readings, **no key needed.**
 >
-> The server works **instantly without any API key**, returning a free **generic preview** (clearly
-> marked `sample: true`) so you can see the shape of a reading. For the **real, chart-specific**
-> answers (true bazi computation, the 70+ endpoint backend), set `ASKTIAN_API_KEY` — the key runs
-> on **TIAN Points**, so it needs a funded balance ([top up at wallet.asktian.com](https://wallet.asktian.com)).
-> `today_energy` and `market_read` are real with or without a key.
+> The tools call the live askTIAN backend and return **real** results — daily almanac, fate
+> compatibility, name analysis, day energy — straight out of the box. The read endpoints are
+> **public and rate-limited** (~300 requests / 15 min). An **optional** `ASKTIAN_API_KEY`
+> ([api.asktian.com](https://api.asktian.com)) raises the limit and unlocks the **premium
+> `tian.*` reading tier**. `market_read` is a deterministic local novelty signal; `best_time`
+> returns a guided preview (no backend endpoint yet).
 
 ```
 You: "I have a hard conversation with my boss tomorrow at 3pm. Should I move it?"
@@ -110,17 +110,17 @@ snippets in **[docs/langchain-llamaindex.md](docs/langchain-llamaindex.md)**.
 
 ## API key
 
-**The key is optional.** Pick your mode:
+**The key is optional — readings are real either way.**
 
-| | 🧪 **Preview mode** (no key) | 🎯 **Live mode** (with key) |
+| | 🆓 **No key** (default) | 🔑 **With key** |
 |---|---|---|
 | Setup | nothing — works instantly | get a key at [api.asktian.com](https://api.asktian.com) |
-| Cost | **free forever** | key runs on **TIAN Points** — needs a funded balance ([top up](https://wallet.asktian.com)) |
-| Best for | **seeing the shape of a reading** | **real, chart-specific answers** |
-| Readings | a **generic preview** (clearly marked `sample: true`, not personalized) | full api.asktian.com backend (70+ endpoints): real bazi computation, daily fortune, full-system compatibility scoring |
-| `today_energy`, `market_read` | real (public almanac data / novelty signal) — same with or without a key |
+| Readings | **real** — live api.asktian.com backend (daily almanac, compatibility, name analysis, day energy) | same real readings |
+| Rate limit | ~**300 requests / 15 min** (per IP) | **higher limits** |
+| Premium `tian.*` tier | — | **unlocked** |
+| Cost | **free** | per the key's plan |
 
-**To switch to Live mode**, set `ASKTIAN_API_KEY` in your client config:
+**To use a key** (higher limits + premium tier), set `ASKTIAN_API_KEY` in your client config:
 
 ```jsonc
 {
@@ -257,7 +257,7 @@ PRs welcome. The lib/ folder is intentionally self-contained for clean npm distr
 
 ## Links
 
-- **API key (runs on TIAN Points):** [api.asktian.com](https://api.asktian.com)
+- **API & docs (optional key — higher limits + premium tier):** [api.asktian.com](https://api.asktian.com)
 - **$TIAN token + wallet:** [wallet.asktian.com](https://wallet.asktian.com)
 - **Source:** [github.com/douglasgan/asktian-mcp](https://github.com/douglasgan/asktian-mcp)
 

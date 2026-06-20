@@ -34,7 +34,7 @@ import { nameAnalysisTool, callNameAnalysis } from "./tools/name-analysis.js";
 import { marketReadTool, callMarketRead } from "./tools/market-read.js";
 import { apiKeyInfo } from "./lib/api-client.js";
 
-const VERSION = "0.3.2";
+const VERSION = "0.3.3";
 const ALL_TOOLS = [
   dailyReadingTool,
   compatibilityTool,
@@ -64,7 +64,7 @@ function buildServer(): Server {
       let result: unknown;
       switch (name) {
         case "asktian_daily_reading":
-          result = callDailyReading(args as Parameters<typeof callDailyReading>[0]);
+          result = await callDailyReading(args as Parameters<typeof callDailyReading>[0]);
           break;
         case "asktian_compatibility":
           result = await callCompatibility(args as Parameters<typeof callCompatibility>[0]);
@@ -73,10 +73,10 @@ function buildServer(): Server {
           result = callBestTime(args as Parameters<typeof callBestTime>[0]);
           break;
         case "asktian_today_energy":
-          result = callTodayEnergy(args as Parameters<typeof callTodayEnergy>[0]);
+          result = await callTodayEnergy(args as Parameters<typeof callTodayEnergy>[0]);
           break;
         case "asktian_name_analysis":
-          result = callNameAnalysis(args as Parameters<typeof callNameAnalysis>[0]);
+          result = await callNameAnalysis(args as Parameters<typeof callNameAnalysis>[0]);
           break;
         case "asktian_market_read":
           result = callMarketRead(args as Parameters<typeof callMarketRead>[0]);

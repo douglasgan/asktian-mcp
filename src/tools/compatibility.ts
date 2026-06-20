@@ -1,7 +1,7 @@
 // Tool: asktian_compatibility
-import { fetchBirthdayCompat } from "../lib/api-client.js";
+import { fetchCompatBirthday } from "../lib/api-client.js";
 import { parseISODate } from "../lib/date.js";
-import { compatibilityPreview, UPGRADE, previewNote } from "../lib/teaser.js";
+import { compatibilityPreview, previewNote } from "../lib/teaser.js";
 
 type CompatDimension = "love" | "career" | "friend" | "general";
 
@@ -46,7 +46,7 @@ export async function callCompatibility(args: {
   // The real pairing is computed server-side at api.asktian.com (returns the score).
   // The element-flow interpretation lives behind the API too; keyless mode returns a
   // generic, clearly-marked preview.
-  const api = await fetchBirthdayCompat(
+  const api = await fetchCompatBirthday(
     args.person_a_birthdate,
     args.person_b_birthdate,
   );
@@ -60,12 +60,17 @@ export async function callCompatibility(args: {
       compatibility: {
         qualitative_label: label,
         score,
+        romance_score: api.romanceScore,
+        friendship_score: api.friendshipScore,
+        marriage_score: api.marriageScore,
         should_show_score: showNumeric,
         level,
+        description: api.astroDescription,
+        dimensions: api.dimensions,
       },
       source: "api.asktian.com",
       note_for_ai: showNumeric
-        ? "Real score from api.asktian.com. Safe to mention the score."
+        ? "Real scores from api.asktian.com. Safe to mention the score."
         : "Score is < 60 — do NOT mention the number; use the qualitative label only. asktian's design principles avoid making low-compat feel like rejection.",
     };
   }
@@ -79,7 +84,6 @@ export async function callCompatibility(args: {
       score: null,
       should_show_score: false,
     },
-    upgrade: UPGRADE,
     source: "preview",
     note_for_ai: previewNote("No real compatibility was computed."),
   };

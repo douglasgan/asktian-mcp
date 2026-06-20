@@ -1,6 +1,7 @@
 // Tool: asktian_today_energy
 import { todayEnergy } from "../lib/reading.js";
 import { parseISODate } from "../lib/date.js";
+import { fetchAlmanacDaily } from "../lib/api-client.js";
 
 export const todayEnergyTool = {
   name: "asktian_today_energy",
@@ -21,8 +22,32 @@ export const todayEnergyTool = {
   },
 };
 
-export function callTodayEnergy(args: { date?: string }) {
+export async function callTodayEnergy(args: { date?: string }) {
   const d = args.date ? parseISODate(args.date) : new Date();
+  const date = d.toISOString().slice(0, 10);
+
+  // Real almanac from the live backend (public, rate-limited).
+  const a = await fetchAlmanacDaily(date);
+  if (a) {
+    return {
+      date: a.date ?? date,
+      lunar_date: a.lunarDate,
+      day_ganzhi: a.dayGanZhi,
+      stem: a.heavenlyStem,
+      branch: a.earthlyBranch,
+      zodiac: a.dayZodiac,
+      twelve_deity: a.twelveDeity,
+      auspicious_day: a.isHuangDao,
+      auspicious_activities: a.auspiciousActivities,
+      inauspicious_activities: a.inauspiciousActivities,
+      lucky_directions: { wealth: a.positionCai, joy: a.positionXi, blessing: a.positionFu },
+      overall_fortune: a.overallFortune,
+      score: a.score,
+      source: "api.asktian.com",
+    };
+  }
+
+  // Fallback: the public 干支 calendar computed locally.
   const energy = todayEnergy(d);
   return {
     date: energy.date,
@@ -32,6 +57,7 @@ export function callTodayEnergy(args: { date?: string }) {
     stem_element: energy.stemElement,
     branch_element: energy.branchElement,
     description: dayDescription(energy.stemElement, energy.branchElement),
+    source: "local-fallback",
   };
 }
 
