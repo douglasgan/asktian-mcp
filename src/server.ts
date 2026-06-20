@@ -34,7 +34,7 @@ import { nameAnalysisTool, callNameAnalysis } from "./tools/name-analysis.js";
 import { marketReadTool, callMarketRead } from "./tools/market-read.js";
 import { apiKeyInfo } from "./lib/api-client.js";
 
-const VERSION = "0.3.0";
+const VERSION = "0.3.2";
 const ALL_TOOLS = [
   dailyReadingTool,
   compatibilityTool,
