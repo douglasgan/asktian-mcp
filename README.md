@@ -257,7 +257,6 @@ PRs welcome. The lib/ folder is intentionally self-contained for clean npm distr
 
 ## Links
 
-- **Web app:** [play.asktian.com](https://play.asktian.com) *(coming soon)*
 - **API key (runs on TIAN Points):** [api.asktian.com](https://api.asktian.com)
 - **$TIAN token + wallet:** [wallet.asktian.com](https://wallet.asktian.com)
 - **Source:** [github.com/douglasgan/asktian-mcp](https://github.com/douglasgan/asktian-mcp)
