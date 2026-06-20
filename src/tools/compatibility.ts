@@ -1,7 +1,9 @@
 // Tool: asktian_compatibility
-import { computeCompatibility, type CompatDimension } from "../lib/compat.js";
 import { fetchBirthdayCompat } from "../lib/api-client.js";
 import { parseISODate } from "../lib/date.js";
+import { compatibilityPreview, UPGRADE, previewNote } from "../lib/teaser.js";
+
+type CompatDimension = "love" | "career" | "friend" | "general";
 
 export const compatibilityTool = {
   name: "asktian_compatibility",
@@ -41,42 +43,44 @@ export async function callCompatibility(args: {
     parseISODate(d, "birthdates"); // validates format + calendar validity
   }
 
-  const local = computeCompatibility(
-    args.person_a_birthdate,
-    args.person_b_birthdate,
-    args.dimension ?? "general",
-  );
-
-  // Try the real API for the numeric score; keep local empathy formatting.
+  // The real pairing is computed server-side at api.asktian.com (returns the score).
+  // The element-flow interpretation lives behind the API too; keyless mode returns a
+  // generic, clearly-marked preview.
   const api = await fetchBirthdayCompat(
     args.person_a_birthdate,
     args.person_b_birthdate,
   );
+
   if (api && typeof api.score === "number") {
-    const apiScore = Math.max(0, Math.min(100, api.score));
-    local.score = apiScore;
-    local.display.showNumeric = apiScore >= 60;
-    local.display.level = apiScore >= 80 ? "good" : apiScore >= 60 ? "moderate" : "soft";
+    const score = Math.max(0, Math.min(100, api.score));
+    const showNumeric = score >= 60;
+    const level = score >= 80 ? "good" : score >= 60 ? "moderate" : "soft";
+    const label = score >= 80 ? "Strong match" : score >= 60 ? "Workable match" : "Tender — needs care";
+    return {
+      compatibility: {
+        qualitative_label: label,
+        score,
+        should_show_score: showNumeric,
+        level,
+      },
+      source: "api.asktian.com",
+      note_for_ai: showNumeric
+        ? "Real score from api.asktian.com. Safe to mention the score."
+        : "Score is < 60 — do NOT mention the number; use the qualitative label only. asktian's design principles avoid making low-compat feel like rejection.",
+    };
   }
 
+  const preview = compatibilityPreview();
   return {
+    sample: true,
     compatibility: {
-      // Per asktian dev principle: qualitative label is the headline,
-      // numeric is metadata that the AI agent can choose whether to surface.
-      qualitative_label: local.qualitativeLabel,
-      category: local.category,
-      element_flow: local.elementFlow.join(" "),
-      description: local.description,
-      // The score is exposed but the agent should respect should_show_score.
-      score: local.score,
-      should_show_score: local.display.showNumeric,
-      level: local.display.level,
+      qualitative_label: preview.qualitative_label,
+      description: preview.description,
+      score: null,
+      should_show_score: false,
     },
-    today_advice: local.todayAdvice,
-    trigrams: local.trigrams,
-    note_for_ai: local.display.showNumeric
-      ? "Safe to mention the score."
-      : "Score is < 60; do NOT mention the number. Use the qualitative label only. asktian's design principles avoid making low-compat feel like rejection.",
-    source: api ? "api.asktian.com" : "local",
+    upgrade: UPGRADE,
+    source: "preview",
+    note_for_ai: previewNote("No real compatibility was computed."),
   };
 }

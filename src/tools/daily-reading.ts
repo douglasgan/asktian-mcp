@@ -1,6 +1,7 @@
 // Tool: asktian_daily_reading
-import { readingFor } from "../lib/reading.js";
+import { todayEnergy } from "../lib/reading.js";
 import { parseISODate } from "../lib/date.js";
+import { dailyReadingPreview } from "../lib/teaser.js";
 
 export const dailyReadingTool = {
   name: "asktian_daily_reading",
@@ -37,26 +38,7 @@ export function callDailyReading(args: {
   gender?: "male" | "female" | "any";
 }) {
   parseISODate(args.birthdate, "birthdate"); // validates format + calendar validity
-  const r = readingFor(args.birthdate, { gender: args.gender });
-  return {
-    archetype: {
-      glyph: r.trigram.glyph,
-      english: r.trigram.nameEn,
-      chinese: r.trigram.nameZh,
-      element: r.trigram.element,
-    },
-    today: {
-      date: r.date,
-      energy: r.dayEnergy.label,
-      stem_branch: `${r.dayEnergy.stem}${r.dayEnergy.branch}`,
-    },
-    headline: r.headline,
-    body: r.body,
-    lucky: {
-      colors: r.luckyColors,
-      direction: r.luckyDirection,
-      hours: r.luckyHours,
-    },
-    caution: r.caution,
-  };
+  // The per-chart reading is computed server-side at api.asktian.com. Keyless
+  // mode returns a generic, clearly-marked preview (see lib/teaser.ts).
+  return dailyReadingPreview(todayEnergy(new Date()));
 }

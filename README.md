@@ -15,11 +15,11 @@ When you ask your AI assistant a timing, person, or decision question, it can qu
 > ### 🧪 Just testing? → run it **with no key — free forever.**
 > ### 🎯 Want the real answers? → add a key from **[api.asktian.com](https://api.asktian.com)** *(requires a funded TIAN balance)*.
 >
-> The server works **instantly without any API key** (local-fallback mode — free forever, great
-> for trying it out). For accurate, full-system readings (real bazi computation, the 70+ endpoint
-> backend), set `ASKTIAN_API_KEY` — note the key runs on **TIAN Points**, so it needs a funded
-> balance ([top up at wallet.asktian.com](https://wallet.asktian.com)). The key is optional;
-> local mode is always free.
+> The server works **instantly without any API key**, returning a free **generic preview** (clearly
+> marked `sample: true`) so you can see the shape of a reading. For the **real, chart-specific**
+> answers (true bazi computation, the 70+ endpoint backend), set `ASKTIAN_API_KEY` — the key runs
+> on **TIAN Points**, so it needs a funded balance ([top up at wallet.asktian.com](https://wallet.asktian.com)).
+> `today_energy` and `market_read` are real with or without a key.
 
 ```
 You: "I have a hard conversation with my boss tomorrow at 3pm. Should I move it?"
@@ -112,13 +112,13 @@ snippets in **[docs/langchain-llamaindex.md](docs/langchain-llamaindex.md)**.
 
 **The key is optional.** Pick your mode:
 
-| | 🧪 **Local mode** (no key) | 🎯 **Live mode** (with key) |
+| | 🧪 **Preview mode** (no key) | 🎯 **Live mode** (with key) |
 |---|---|---|
 | Setup | nothing — works instantly | get a key at [api.asktian.com](https://api.asktian.com) |
 | Cost | **free forever** | key runs on **TIAN Points** — needs a funded balance ([top up](https://wallet.asktian.com)) |
-| Best for | **testing / trying it out** | **real, accurate answers** |
-| Readings | computed locally on the spot | full api.asktian.com backend (70+ endpoints): real bazi computation, daily fortune, full-system compatibility scoring |
-| `today_energy`, `name_analysis` | identical to live | identical to local |
+| Best for | **seeing the shape of a reading** | **real, chart-specific answers** |
+| Readings | a **generic preview** (clearly marked `sample: true`, not personalized) | full api.asktian.com backend (70+ endpoints): real bazi computation, daily fortune, full-system compatibility scoring |
+| `today_energy`, `market_read` | real (public almanac data / novelty signal) — same with or without a key |
 
 **To switch to Live mode**, set `ASKTIAN_API_KEY` in your client config:
 

@@ -1,6 +1,11 @@
 // Tool: asktian_best_time_for_action
-import { bestTimeFor, type ActionKind } from "../lib/best-time.js";
 import { parseISODate } from "../lib/date.js";
+import { bestTimePreview } from "../lib/teaser.js";
+
+// Action kinds the tool accepts (kept for the input schema / typing).
+type ActionKind =
+  | "difficult_conversation" | "negotiation" | "launch" | "first_meeting"
+  | "ask_for_favor" | "make_decision" | "rest" | "creative_work" | "travel" | "generic";
 
 export const bestTimeTool = {
   name: "asktian_best_time_for_action",
@@ -52,23 +57,8 @@ export function callBestTime(args: {
   range_days?: number;
 }) {
   parseISODate(args.birthdate, "birthdate"); // validates format + calendar validity
-  // Coerce to a finite integer; a non-numeric range_days (e.g. "abc", NaN) would
-  // otherwise flow through Math.max(1, NaN) → NaN and produce "No window in NaN days".
-  const n = Number(args.range_days ?? 7);
-  const range = Number.isFinite(n) ? Math.min(30, Math.max(1, Math.floor(n))) : 7;
-  const result = bestTimeFor(args.birthdate, args.action ?? "generic", range);
-  return {
-    person: {
-      archetype: result.trigram.nameEn,
-      glyph: result.trigram.glyph,
-      element: result.trigram.element,
-    },
-    action: result.action,
-    headline: result.oneLine,
-    best_windows: result.bestWindows,
-    avoid_windows: result.avoidWindows,
-    note_for_ai:
-      "Surface the top window with its reason. If the user proposed a specific time, " +
-      "compare it to the best windows — recommend moving if the proposed time has a score < 50.",
-  };
+  // Ranked, chart-specific time windows are computed server-side at api.asktian.com.
+  // Keyless mode returns a generic, clearly-marked preview (no real windows) — see
+  // lib/teaser.ts.
+  return bestTimePreview(args.action ?? "generic");
 }
